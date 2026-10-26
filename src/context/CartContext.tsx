@@ -1,0 +1,7 @@
+import { createContext,useContext,useEffect,useMemo,useState,type ReactNode } from 'react';
+import type { CartItem,Product } from '../types/product';
+import { isFood } from '../api/productsApi';
+type CartValue={items:CartItem[];count:number;subtotal:number;add:(p:Product,q?:number)=>void;setQuantity:(id:number,q:number)=>void;remove:(id:number)=>void;clear:()=>void};
+const CartContext=createContext<CartValue | null>(null);
+export function CartProvider({children}:{children:ReactNode}){const [items,setItems]=useState<CartItem[]>(()=>{try{return (JSON.parse(localStorage.getItem('freshcart-cart')||'[]') as CartItem[]).filter(i=>i?.product&&isFood(i.product))}catch{return []}});useEffect(()=>localStorage.setItem('freshcart-cart',JSON.stringify(items)),[items]);const value=useMemo<CartValue>(()=>({items,count:items.reduce((s,i)=>s+i.quantity,0),subtotal:items.reduce((s,i)=>s+i.product.price*i.quantity,0),add:(product,q=1)=>setItems(old=>{const found=old.find(i=>i.product.id===product.id);return found?old.map(i=>i.product.id===product.id?{...i,quantity:i.quantity+q}:i):[...old,{product,quantity:q}]}),setQuantity:(id,q)=>setItems(old=>q<=0?old.filter(i=>i.product.id!==id):old.map(i=>i.product.id===id?{...i,quantity:q}:i)),remove:id=>setItems(old=>old.filter(i=>i.product.id!==id)),clear:()=>setItems([])}),[items]);return <CartContext.Provider value={value}>{children}</CartContext.Provider>}
+export const useCart=()=>{const c=useContext(CartContext);if(!c)throw new Error('useCart must be used inside CartProvider');return c};

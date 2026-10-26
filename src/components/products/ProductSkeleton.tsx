@@ -1,0 +1,1 @@
+export default function ProductSkeleton(){return <div className="product-grid">{Array.from({length:8},(_,i)=><div className="skeleton-card" key={i}><div className="skeleton skeleton-image"/><div className="skeleton skeleton-line short"/><div className="skeleton skeleton-line"/><div className="skeleton skeleton-line medium"/></div>)}</div>}

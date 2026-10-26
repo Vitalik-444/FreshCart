@@ -1,0 +1,2 @@
+import { Link } from 'react-router-dom';import { ArrowLeft,ShoppingBasket } from 'lucide-react';
+export default function NotFoundPage(){return <div className="not-found container"><span className="not-found-icon"><ShoppingBasket size={40}/></span><span className="eyebrow">WRONG AISLE!</span><h1>404<span>.</span></h1><h2>This page wandered off.</h2><p>We couldn't find the page you were looking for. Let's get you back to the good stuff.</p><Link className="button button-primary" to="/"><ArrowLeft size={17}/> Back to FreshCart</Link></div>}
